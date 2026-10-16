@@ -1,0 +1,643 @@
+local guiService = game:GetService("GuiService")
+local teleportService = game:GetService("TeleportService")
+local players = game:GetService("Players")
+local httpService = game:GetService("HttpService")
+local runService = game:GetService("RunService")
+local coreGui = game:GetService("CoreGui")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+
+local localPlayer = players.LocalPlayer
+  or players:GetPropertyChangedSignal("LocalPlayer"):Wait()
+
+local v1 = 2
+local v2 = 35
+
+local function f1()
+  task.wait(1)
+
+  while true do
+    pcall(function()
+      local v3 = (identifyexecutor or function() return "Unknown" end)()
+
+      if v3:match("Solara") or v3:match("Xeno") or not queue_on_teleport then
+        local v4, v5 = pcall(function()
+          return game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId
+            .. "/servers/Public?sortOrder=Asc&limit=100")
+        end)
+
+        if v4 then
+          local v6 = {}
+
+          for index, value in ipairs(httpService:JSONDecode(v5).data) do
+            if type(value) == "table" and value.playing and value.maxPlayers then
+              if value.playing >= v1 and value.playing <= v2 and value.id ~= game.JobId then
+                table.insert(v6, value.id)
+              end
+            end
+          end
+
+          if #v6 > 0 then
+            teleportService:TeleportToPlaceInstance(
+              game.PlaceId, v6[math.random(1, #v6)], localPlayer
+            )
+
+            return
+          end
+        end
+
+        teleportService:Teleport(game.PlaceId, localPlayer)
+        return
+      else
+        queue_on_teleport([[
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/nouveau217/Dddddeww/refs/heads/main/text.lua"))()
+]])
+
+        local v7, v8 = pcall(game.HttpGet, game, "https://games.roblox.com/v1/games/" .. game.PlaceId
+          .. "/servers/Public?sortOrder=Desc&limit=100")
+
+        if v7 then
+          local v9 = {}
+
+          for key, value2 in pairs(httpService:JSONDecode(v8).data) do
+            if type(value2) == "table" and value2.playing and value2.maxPlayers
+              and value2.id ~= game.JobId then
+              if value2.playing >= v1 and value2.playing <= v2 then
+                table.insert(v9, value2.id)
+              end
+            end
+          end
+
+          if #v9 > 0 then
+            teleportService:TeleportToPlaceInstance(
+              game.PlaceId, v9[math.random(1, #v9)], localPlayer
+            )
+
+            return
+          end
+
+          teleportService:Teleport(game.PlaceId, localPlayer)
+          return
+        end
+
+        teleportService:Teleport(game.PlaceId, localPlayer)
+        return
+      end
+    end)
+
+    task.wait(10)
+  end
+end
+
+guiService.ErrorMessageChanged:Connect(function() f1() end)
+
+task.spawn(function()
+  local waitForChild = coreGui:WaitForChild("RobloxPromptGui", 15)
+  local waitForChild2 = waitForChild and waitForChild:WaitForChild("promptOverlay", 10)
+
+  if waitForChild2 then
+    if waitForChild2:FindFirstChild("ErrorPrompt") then
+      f1()
+    end
+
+    waitForChild2.ChildAdded:Connect(function(child)
+      if child.Name == "ErrorPrompt" then
+        f1()
+      end
+    end)
+  end
+end)
+
+if not game:IsLoaded() then
+  game.Loaded:Wait()
+end
+
+local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+local f2, f3, f4, f5, f6, currentCamera, v10, vector, v11, f7, v12, f8
+
+if not character:WaitForChild("FULLY_LOADED_CHAR", 30) then
+  warn("Script timed out waiting for FULLY_LOADED_CHAR.")
+  return
+else
+  currentCamera = workspace.CurrentCamera
+  v10 = fireclickdetector
+
+  local function f9(p1)
+    local v13, v14 = pcall(game.HttpGet, game, p1)
+
+    if v13 and v14 then
+      local v15, v16 = loadstring(v14)
+
+      if v15 then
+        v15()
+      else
+        warn("Loadstring compile error: ", v16)
+      end
+    else
+      warn("HTTP Fetch failed for: ", p1)
+    end
+  end
+
+  f9("")
+  f9("https://raw.githubusercontent.com/YuvicHaha/batoon/refs/heads/main/bat")
+
+  vector = Vector3.new(-616.1, -31.08, -267.78)
+
+  v11 = {
+    "Head", "RightHand", "LeftHand", "LowerTorso", "UpperTorso", "LeftLowerLeg",
+    "RightLowerLeg", "RightFoot", "LeftFoot", "LeftUpperLeg", "RightUpperLeg", "RightUpperArm",
+    "RightLowerArm", "LeftLowerArm", "LeftUpperArm",
+  }
+
+  runService.Heartbeat:Connect(function()
+    local character2 = localPlayer.Character
+
+    if not character2 then
+      return
+    else
+      local humanoid = character2:FindFirstChildOfClass("Humanoid")
+      local bodyEffects = character2:FindFirstChild("BodyEffects")
+      local kO = bodyEffects and bodyEffects:FindFirstChild("K.O")
+
+      if humanoid and humanoid.Health <= 5 or kO and kO.Value == true then
+        for i = 1, #v11 do
+          local findFirstChild = character2:FindFirstChild(v11[i])
+
+          if findFirstChild then
+            findFirstChild:Destroy()
+          end
+        end
+      end
+
+      return
+    end
+  end)
+
+  function f7()
+    local leaderstats = localPlayer:FindFirstChild("leaderstats")
+    local money = leaderstats and leaderstats:FindFirstChild("Money")
+
+    if money then
+      return money.Value
+    else
+      local dataFolder = localPlayer:FindFirstChild("DataFolder")
+      local currency = dataFolder and dataFolder:FindFirstChild("Currency")
+
+      if currency then
+        return currency.Value
+      end
+
+      return 0
+    end
+  end
+
+  local v17 = request or http_request or syn and syn.request or fluxus and fluxus.request
+
+  function f2()
+    local v18 = workspace
+    local v19 = {}
+    local drop = v18:FindFirstChild("Ignored") and workspace.Ignored:FindFirstChild("Drop")
+
+    if drop then
+      for index2, value3 in ipairs(drop:GetChildren()) do
+        if value3.Name == "MoneyDrop" then
+          local character3 = localPlayer.Character
+
+          local humanoidRootPart = character3
+
+          humanoidRootPart = character3
+            and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+          if humanoidRootPart and value3:IsA("BasePart")
+            and (value3.Position - humanoidRootPart.Position).Magnitude <= 45 then
+            table.insert(v19, value3)
+          end
+        end
+      end
+    end
+
+    return v19
+  end
+
+  function f3()
+    local v20 = (identifyexecutor or function() return "Unknown" end)()
+
+    if v20:match("Solara") or v20:match("Xeno") or not queue_on_teleport then
+      local v21, v22 = pcall(function()
+        return game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId
+          .. "/servers/Public?sortOrder=Asc&limit=100")
+      end)
+
+      if v21 then
+        local v23 = {}
+
+        for index3, value4 in ipairs(httpService:JSONDecode(v22).data) do
+          if type(value4) == "table" and value4.playing and value4.maxPlayers then
+            if value4.playing >= v1 and value4.playing <= v2 and value4.id ~= game.JobId then
+              table.insert(v23, value4.id)
+            end
+          end
+        end
+
+        if #v23 > 0 then
+          teleportService:TeleportToPlaceInstance(
+            game.PlaceId, v23[math.random(1, #v23)], localPlayer
+          )
+
+          return
+        end
+      end
+
+      task.wait(1)
+      teleportService:Teleport(game.PlaceId, localPlayer)
+      return
+    else
+      queue_on_teleport([[
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/nouveau217/Dddddeww/refs/heads/main/text.lua"))()
+]])
+
+      local v24, v25 = pcall(game.HttpGet, game, "https://games.roblox.com/v1/games/" .. game.PlaceId
+        .. "/servers/Public?sortOrder=Desc&limit=100")
+
+      if v24 then
+        local v26 = {}
+
+        for key2, value5 in pairs(httpService:JSONDecode(v25).data) do
+          if type(value5) == "table" and value5.playing and value5.maxPlayers
+            and value5.id ~= game.JobId then
+            if value5.playing >= v1 and value5.playing <= v2 then
+              table.insert(v26, value5.id)
+            end
+          end
+        end
+
+        if #v26 > 0 then
+          teleportService:TeleportToPlaceInstance(
+            game.PlaceId, v26[math.random(1, #v26)], localPlayer
+          )
+
+          return
+        end
+
+        task.wait(1)
+        teleportService:Teleport(game.PlaceId, localPlayer)
+        return
+      end
+
+      task.wait(1)
+      teleportService:Teleport(game.PlaceId, localPlayer)
+      return
+    end
+  end
+
+  function f4(value6, p2)
+    local webhook = getgenv().webhook
+
+    if not webhook or webhook == "" or not v12 then
+      return
+    end
+
+    local v27 = {
+      embeds = {
+        {
+          title = "Vault Farm Status Report",
+          color = 49151,
+          fields = {
+            { name = "Account", value = "`" .. localPlayer.Name .. "`", inline = true },
+            { name = "Status Action", value = value6, inline = false },
+            { name = "Cash Gained Here", value = "**$" .. tostring(p2) .. "**", inline = true },
+            { name = "Total Wallet Balance", value = "$" .. tostring(f7()), inline = true },
+          },
+          footer = { text = "Solara AutoFarm System • " .. os.date("%X") },
+        },
+      },
+    }
+
+    pcall(function()
+      v12({
+        Url = webhook,
+        Method = "POST",
+        Headers = { ["Content-Type"] = "application/json" },
+        Body = httpService:JSONEncode(v27),
+      })
+    end)
+  end
+v12 = v17
+
+  function f5()
+    local cashiers = workspace:FindFirstChild("Cashiers")
+
+    if cashiers then
+      for index4, value7 in ipairs(cashiers:GetChildren()) do
+        if value7.Name:match("VAULT") and value7:FindFirstChild("Humanoid")
+          and value7.Humanoid.Health > 0 then
+          return true
+        end
+      end
+
+      return false
+    end
+
+    return false
+  end
+
+  function f6()
+    local shop = workspace:FindFirstChild("Ignored")
+      and workspace.Ignored:FindFirstChild("Shop")
+
+    local grenade788 = shop and shop:FindFirstChild("[Grenade] - $788")
+
+    if grenade788 and grenade788:FindFirstChild("ClickDetector") then
+      local humanoidRootPart2 = localPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+      if humanoidRootPart2 then
+        local cframe = humanoidRootPart2.CFrame
+        humanoidRootPart2.CFrame = grenade788.Head.CFrame * CFrame.new(0, 3, 0)
+        task.wait(0.5)
+        v10(grenade788.ClickDetector, 0)
+        task.wait(0.3)
+        humanoidRootPart2.CFrame = cframe
+      end
+    end
+  end
+
+  function f8()
+    while not localPlayer.Character
+      or not localPlayer.Character:FindFirstChild("HumanoidRootPart") do
+      task.wait()
+    end
+
+    local character4, humanoidRootPart3, humanoid2
+
+    if not f5() then
+      f4("Instant Skip: All 4 vaults are empty on join.", 0)
+      f3()
+      return
+    else
+      character4 = localPlayer.Character
+      humanoidRootPart3 = character4:WaitForChild("HumanoidRootPart")
+      humanoid2 = character4:WaitForChild("Humanoid")
+      local v28 = f7()
+      humanoidRootPart3.CFrame = CFrame.new(vector)
+      task.wait(1.2)
+      local map = workspace:FindFirstChild("MAP")
+      local map2 = map and map:FindFirstChild("Map")
+      local vault = map2 and map2:FindFirstChild("Vault")
+      local vaultPart = vault and vault:FindFirstChild("VaultPart")
+      local v29 = not (vaultPart and vaultPart.Parent)
+      local v30 = workspace
+
+      local v31 = {
+        { Name = "[Grenade] - $788", Count = v29 and 0 or 3 },
+        { Name = "[Drum-Shotgun] - $1238", Count = 1 },
+        { Name = "18 [Drum-Shotgun Ammo] - $73", Count = 4 },
+      }
+
+      local shop2 = v30:FindFirstChild("Ignored") and workspace.Ignored:FindFirstChild("Shop")
+
+      if shop2 then
+        for j = 1, #v31 do
+          local v32 = v31[j]
+
+          if v32.Count > 0 then
+            local findFirstChild2 = shop2:FindFirstChild(v32.Name)
+
+            if findFirstChild2 then
+              humanoidRootPart3.CFrame = findFirstChild2.Head.CFrame * CFrame.new(0, 3, 0)
+              task.wait(0.5)
+
+              for k = 1, v32.Count do
+                v10(findFirstChild2.ClickDetector, 0)
+                task.wait(0.25)
+              end
+            end
+          end
+        end
+      end
+
+      local v33 = not v29
+
+      local function f10()
+        local map3 = workspace:FindFirstChild("MAP")
+        local map4 = map3 and map3:FindFirstChild("Map")
+        local vault2 = map4 and map4:FindFirstChild("Vault")
+        local vaultPart2 = vault2 and vault2:FindFirstChild("VaultPart")
+
+        if vaultPart2 and vaultPart2.Parent then
+          local grenade = localPlayer.Backpack:FindFirstChild("[Grenade]")
+            or character4:FindFirstChild("[Grenade]")
+
+          if not grenade then
+            f6()
+            task.wait(0.4)
+
+            grenade = localPlayer.Backpack:FindFirstChild("[Grenade]")
+              or character4:FindFirstChild("[Grenade]")
+          end
+
+          if grenade then
+            humanoidRootPart3.CFrame = CFrame.new(vector)
+            task.wait(0.6)
+            currentCamera.CameraType = Enum.CameraType.Scriptable
+            local v34 = vaultPart2.Position - Vector3.new(0, 10, 0)
+            local head = character4:FindFirstChild("Head")
+
+            if head then
+              currentCamera.CFrame = CFrame.new(head.Position, v34)
+            end
+
+            humanoidRootPart3.CFrame = CFrame.new(humanoidRootPart3.Position, Vector3.new(
+              v34.X, humanoidRootPart3.Position.Y, v34.Z
+            ))
+
+            humanoid2:EquipTool(grenade)
+            task.wait(0.5)
+            grenade:Activate()
+            task.wait(0.7)
+
+            if grenade.Parent == character4 then
+              grenade:Activate()
+            end
+
+            task.wait(2.2)
+
+            currentCamera.CameraType = Enum.CameraType.Custom
+            currentCamera.CameraSubject = humanoid2
+
+            humanoid2:UnequipTools()
+          end
+        end
+      end
+
+      if v33 and vaultPart then
+        local count = 0
+
+        while vaultPart and vaultPart.Parent and count < 4 do
+          if humanoid2.Health <= 0 then
+            return
+          else
+            count = count + 1
+
+            local grenade2 = localPlayer.Backpack:FindFirstChild("[Grenade]")
+              or character4:FindFirstChild("[Grenade]")
+
+            if not grenade2 then
+              f6()
+              task.wait(0.4)
+
+              grenade2 = localPlayer.Backpack:FindFirstChild("[Grenade]")
+                or character4:FindFirstChild("[Grenade]")
+            end
+
+            if grenade2 then
+              humanoidRootPart3.CFrame = CFrame.new(vector)
+              task.wait(0.6)
+              currentCamera.CameraType = Enum.CameraType.Scriptable
+              local v35 = vaultPart.Position - Vector3.new(0, 10, 0)
+              local head2 = character4:FindFirstChild("Head")
+
+              if head2 then
+                currentCamera.CFrame = CFrame.new(head2.Position, v35)
+              end
+
+              humanoidRootPart3.CFrame = CFrame.new(humanoidRootPart3.Position, Vector3.new(
+                v35.X, humanoidRootPart3.Position.Y, v35.Z
+              ))
+
+              humanoid2:EquipTool(grenade2)
+              task.wait(0.5)
+              grenade2:Activate()
+              task.wait(0.7)
+
+              if grenade2.Parent == character4 then
+                grenade2:Activate()
+              end
+
+              task.wait(2.2)
+
+              currentCamera.CameraType = Enum.CameraType.Custom
+              currentCamera.CameraSubject = humanoid2
+
+              humanoid2:UnequipTools()
+            end
+
+            task.wait(2)
+          end
+        end
+
+        currentCamera.CameraType = Enum.CameraType.Custom
+        currentCamera.CameraSubject = humanoid2
+      end
+
+      local cashiers2 = workspace:FindFirstChild("Cashiers")
+
+      if cashiers2 then
+        for index5, value8 in ipairs(cashiers2:GetChildren()) do
+          f10()
+          local humanoid3 = value8:FindFirstChildOfClass("Humanoid")
+          local head3 = value8:FindFirstChild("Head")
+
+          local part = head3
+          part = head3 or value8:FindFirstChild("Part")
+
+          if value8.Name:match("VAULT") and humanoid3 and humanoid3.Health > 0 and part then
+            local drumShotgun = localPlayer.Backpack:FindFirstChild("[Drum-Shotgun]")
+              or character4:FindFirstChild("[Drum-Shotgun]")
+
+            if drumShotgun then
+              humanoid2:EquipTool(drumShotgun)
+              task.wait(0.4)
+              localPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
+              local cframe2 = part.CFrame * CFrame.new(0, 0, 3.5)
+              humanoidRootPart3.CFrame = cframe2
+              task.wait(0.2)
+
+              while humanoid3.Health > 0 and value8.Parent do
+                if humanoid2.Health <= 0 then
+                  localPlayer.CameraMode = Enum.CameraMode.Classic
+                  return
+                else
+                  humanoidRootPart3.CFrame = CFrame.new(humanoidRootPart3.Position, Vector3.new(
+                    part.Position.X, part.Position.Y, part.Position.Z
+                  ))
+
+                  local ammo = drumShotgun:FindFirstChild("Ammo")
+
+                  if ammo and ammo.Value <= 1 then
+                    local mainEvent = replicatedStorage:FindFirstChild("MainEvent")
+
+                    if mainEvent then
+                      mainEvent:FireServer("Reload", drumShotgun)
+                    end
+
+                    task.wait(2)
+                    humanoidRootPart3.CFrame = cframe2
+                  end
+
+                  drumShotgun:Activate()
+                  task.wait(0.12)
+                end
+              end
+
+              humanoid2:UnequipTools()
+              localPlayer.CameraMode = Enum.CameraMode.Classic
+              task.wait(0.2)
+            end
+          end
+        end
+      end
+
+      humanoid2:UnequipTools()
+      task.wait(0.5)
+      local v36 = tick()
+
+      while tick() - v36 < 38 do
+        local v37 = f2()
+
+        if #v37 == 0 then
+          break
+        end
+
+        for index6, value9 in ipairs(v37) do
+          local clickDetector = value9:FindFirstChildOfClass("ClickDetector")
+
+          if clickDetector and humanoidRootPart3 then
+            humanoidRootPart3.CFrame = value9.CFrame * CFrame.new(0, 3, 0)
+            task.wait(0.4)
+            v10(clickDetector)
+            task.wait(0.4)
+          end
+        end
+
+        task.wait(0.5)
+      end
+
+      local v38 = f7()
+      f4("Successfully finished run and harvested money.", (math.max(0, v38 - v28)))
+      task.wait(1)
+      f3()
+      return
+    end
+  end
+
+  if not f5() then
+    f4("Instant Skip: Server empty at execution.", 0)
+    f3()
+  else
+    localPlayer.CharacterAdded:Connect(function()
+      task.wait(1.5)
+      f8()
+    end)
+
+    f8()
+  end
+
+  return
+end
